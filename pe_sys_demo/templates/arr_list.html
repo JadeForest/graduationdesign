@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<title>体检人员安排管理</title>
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    {% if event.status == 0 %}
+    <!-- <a class="btn btn-primary" href="choose_group/"><i class="glyphicon glyphicon-check"></i> 按科室安排</a> -->
+    <a class="btn btn-primary" href="choose/"><i class="glyphicon glyphicon-list"></i> 编辑安排</a>
+    {% endif %}
+
+    <a class="btn btn-default" href="../../">返回</a>
+    {% if event.status == 2 %}
+    <a class="btn btn-primary" href="../rec_table/"><i class="glyphicon glyphicon-list"></i> 查看结果总表</a>
+    {% endif %}
+    {% include 'sub\search.html' %}
+</div>
+
+<!-- form -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th-list"></i>
+            已安排参检人员列表
+        </h3>
+        <div id="eventInfo" eid="{{event.eid}}">
+            时间：{{ event.time }}&nbsp;&nbsp;
+            描述：{{ event.desc }}<br>
+            共{{ event.userevent_set.count }}人
+        </div>
+    </div>
+
+    {% if page.object_list.exists %}
+    <table class="table table-bordered table-hover">
+        <thread>
+            <tr>
+                <th>UID</th>
+                <th>姓名</th>
+                <th>身份证号</th>
+                <th>手机号</th>
+                <th>科室</th>
+                <th>性别</th>
+                <th>状态</th>
+            </tr>
+
+        </thread>
+        <tbody>
+            {% for obj in page.object_list %}
+            <tr>
+                <th>{{obj.user.account_id}}</th>
+                <th>{{obj.user.name}}</th>
+                <td>{{obj.user.account.idnum}}</td>
+                <td>{{obj.user.phone}}</td>
+                <td>{{obj.user.dep}}</td>
+                <td>{{obj.user.get_gender_display}}</td>
+                <td>{{obj.get_status_display}}</td>
+                {% if event.status != 0 %}
+                    {% if obj.status == 0 %}
+                    <td>
+                        <a href="/rec/input/?eid={{event.eid}}&uid={{obj.user.account_id}}" class="btn btn-info btn-xs">结果录入</a>
+                    </td>
+                    {% else %}
+                    <td>
+                        <a href="/rec/?&eid={{event.eid}}&uid={{obj.user.account_id}}" class="btn btn-primary btn-xs">查看结果</a>
+                    </td>
+                    {% endif %}
+                {% endif %}
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- 分页 -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <span style="margin-right: 5px;">共{{totalnum}}条</span>
+        {{ page.render }}
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无项目</div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js\search.js' %}"></script>
+
+{% endblock %}

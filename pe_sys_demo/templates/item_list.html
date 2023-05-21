@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<title>体检项目列表</title>
+
+<div style="margin-bottom: 10px;">
+    <a type="button" id="btnAdd" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新建项目</a>
+
+    <div style="float: right;">
+        <form class="form-inline" novalidate>
+            <div class="form-group">
+                <i class="glyphicon glyphicon-filter"></i>
+                {{itype_form.itype}}
+            </div>
+            {% for q in se_form %}
+            <div class="form-group">
+                <label class="sr-only"></label>
+                {{q}}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" id="clear" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i></button>
+        </form>
+    </div>
+</div>
+
+<!-- 对话框 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="infoModalLabel">title</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="formAdd">
+                    <div class="clearfix">
+                        {% for field in form %}
+
+                        <div class="form-group col-lg-6">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            <span class="error-msg" id="{{field.name}}_err" style="color:red">{{field.errors.0}}</span>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" id="btnSave" class="btn btn-primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除对话框 -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+            <h4>确定要删除该项吗？</h4>
+            <p style="margin: 11px 0px">所有关联数据将会一并删除。</p>
+            <p style="text-align: right;">
+                <button id="btn-del-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- 表格 -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th-list"></i>
+            体检项目列表
+        </h3>
+    </div>
+
+    <span id="res"><span id="res-content">
+        {% if page.object_list.exists %}
+        
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>所属类别</th>
+                    <th>结果类型</th>
+                    <th>正常/参考值</th>
+                    <th>单位</th>
+                    <th>操作</th>
+
+                </tr>
+            
+            </thread>
+            <tbody>
+                {% for obj in page.object_list %}
+                <tr item_id="{{obj.item_id}}">
+                    <th>{{obj.item_id}}</th>
+                    <td>{{obj.item}}</td>
+                    <td>{{obj.itype}}</td>
+                    <td>{{obj.get_cate_display}}</td>
+                    {% if obj.cate == 0 %}
+                    <td>{{obj.low_lmt|cut:'None'}}~{{obj.high_lmt|cut:'None'}}</td>
+                    {% else %}
+                    <td>{{obj.ref}}</td>
+                    {% endif %}
+                    <td>{{obj.unit}}</td>
+                    <td>
+                        <button item_id="{{obj.item_id}}" type="button" class="btn btn-info btn-xs btn-edit">编辑</button>
+                        <button item_id="{{obj.item_id}}" type="button"
+                            class="btn btn-danger btn-xs btn-del">删除</button>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- 分页 -->
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <span style="margin-right: 5px;">共{{totalnum}}条</span>
+            {{ page.render }}
+        </div>
+
+        {% else %}
+        <div id="res-content" class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无项目</div>
+
+        {% endif %}
+    </span></span>
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+<script src="{% static 'js\item_list.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+{% endblock %}

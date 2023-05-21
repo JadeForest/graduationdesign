@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+{% load dicttags %}
+
+{% block content %}
+<title>体检结果-按项目查看</title>
+<style>
+    .panel {
+        padding: 0%;
+    }
+</style>
+
+{% include 'sub\record_personal_info_panel.html' %}
+
+<div class="col-lg-6" style="padding: 5px;">
+    <div class="panel panel-default" style="height: 189.7px;">
+        <div class="panel-heading">
+            <i class="glyphicon glyphicon-info-sign"></i> 选择体检科类
+            <span><a class="btn btn-default btn-xs" href="/rec/?uid={{user.account.uid}}">按时间查看</a></span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">科类名称</label>
+                    <div class="input-group col-lg-8">
+                        {{form.tid}}
+                        <span class="input-group-btn">
+                            <button id="item-choose" class="btn btn-success" type="button">选择</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered" id="itypeInfo" itemid="{{itype.id}}">
+                <tr>
+                    <th style="width: 160px">包含项目数量</th>
+                    <td>{{itype.item_set.count}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12" style="padding: 5px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                结果详情
+            </h3>
+        </div>
+        <table class="table table-bordered table-hover table-responsive">
+            <thread>
+                <tr>
+                    <th>体检时间</th>
+                    {% for item in itype.item_set.all %}
+                    <th     
+                    {% if item.cate == 0 %}
+                    title="参考值：{{item.low_lmt|cut:'None'}}~{{item.high_lmt|cut:'None'}}&nbsp;&nbsp;{{item.unit}}"
+                    {% else %}
+                    title="参考值：{{item.ref}}"
+                    {% endif %}
+                    >
+                        {{item}}
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thread>
+
+            <tbody>
+                {% for ue in page.object_list %}
+                <tr>
+                    <th>{{ue.event.time}}</th>
+                    {% for ele in ue.record_set|myfilter:itype.item_set %}
+                    <td>
+                        {{ele}}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <span style="margin-right: 5px;">共{{totalnum}}条</span>
+            {{ page.render }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    let tid;
+    let uid;
+
+    $(function () {
+        tid = $('#itypeInfo').attr('tid');
+        uid = $('#user').attr('uid');
+        bindSelectEvent();
+    })
+
+
+    function bindSelectEvent() {
+        $('#item-choose').click(function () {
+            tid = $('#id_tid').find('option:selected').attr('value');
+            if (tid){
+                window.location.replace(location.pathname + '?uid=' + uid +'&tid=' + tid);
+            }
+        })
+    }    
+    
+
+</script>
+{% endblock %}

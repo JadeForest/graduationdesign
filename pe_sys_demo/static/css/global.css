@@ -1,0 +1,41 @@
+.table {
+    margin-bottom: 10px;
+}
+
+.wrap {
+    max-width: 300px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.alert {
+    margin-bottom: 0;
+}
+
+.panel-body {
+    margin: 7px;
+}
+
+.error-msg {
+    height: 10px;
+    width: 100%;
+    display: inline-block;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f0fdff;
+}
+
+.navbar-default {
+    border-radius: 0;
+    height: 51px;
+}
+
+.brand-primary {
+    color: aqua;
+}

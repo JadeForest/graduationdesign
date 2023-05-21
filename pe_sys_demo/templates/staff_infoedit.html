@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<title>医务人员用户{{user}}-编辑个人信息</title>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-pencil"></i>
+            个人信息编辑
+        </h3>
+    </div>
+    <div class="panel-body">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="form-horizontal col-lg-12">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">工号</label>
+                    <div class="col-lg-8">
+                        <div class="form-control">{{ user.account.idnum }}</div>
+                    </div>
+                </div>
+            </div>
+                
+            <div class="form-horizontal clearfix">
+                {% for field in u_form %}
+                <div class="form-group col-lg-6">
+                    <label class="col-lg-3 control-label">{{ field.label }}</label>
+                    <div class="col-lg-9">
+                        {{ field }}
+                        <span style="color:red">{{ field.errors.0 }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+
+            <div style="padding-right: 50px;">
+                <div style="float: right;">
+                    <button type="submit" class="btn btn-primary">提 交</button>
+                    <a class="btn btn-default" href="../">返 回</a>      
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

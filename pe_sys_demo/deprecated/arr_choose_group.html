@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+
+{% block content %}
+<title>快速安排</title>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="glyphicon glyphicon-edit"></i>
+        按科室安排人员
+    </div>
+
+    <form method="post" enctype="multipart/form-data" style="display: flex; justify-content: center; align-items: center; height: 100px;">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>选择科室</label>
+            <select name="dep" class="form-control" id="selectDep">
+                {% for ele in dep_list %}
+                <option value="{{ele}}">{{ele}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <input type="submit" class="btn btn-primary" id="subDep">
+    </form>
+
+</div>
+
+{% endblock %}

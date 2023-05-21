@@ -1,0 +1,222 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% load dicttags %}
+
+{% block content %}
+<title>体检结果-按时间查看</title>
+<style>
+    .panel {
+        padding: 0%;
+    }
+</style>
+
+{% include 'sub\record_personal_info_panel.html' %}
+
+<div class="col-lg-6" style="padding: 5px;">
+    <div class="panel panel-default" style="height: 189.7px;">
+        <div class="panel-heading">
+            <i class="glyphicon glyphicon-info-sign"></i> 体检时间选择
+            <span><a class="btn btn-default btn-xs" href="/rec/by_item/?uid={{user.account.uid}}">按项目查看</a></span>
+        </div>
+        <div class="panel-body">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">时间1</label>
+                    <div class="input-group col-lg-8">
+                        <select id="event" class="form-control" eid="{{ue.event.eid}}">
+                            <option eid="{{ue.event.eid}}">{{ue.event.time}}&nbsp;&nbsp;&nbsp;{{ue.event.desc}}</option>
+                            {% for ue in ue_set %}
+                            <option eid="{{ue.event.eid}}">{{ue.event.time}}&nbsp;&nbsp;&nbsp;{{ue.event.desc}}</option>
+                            {% empty %}
+                            <option>暂无体检事件</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-btn">
+                            <button id="remove" class="btn btn-default" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+                            
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group" style="margin-bottom: 5px;">
+                    <label class="col-lg-2 control-label">时间2</label>
+                    <div class="input-group col-lg-8">
+                        <select id="event2" class="form-control" eid="{{ue2.event.eid}}">
+                            <option eid="{{ue2.event.eid}}">{{ue2.event.time}}&nbsp;&nbsp;&nbsp;{{ue2.event.desc}}</option>
+                            {% for ue in ue_set %}
+                            <option eid="{{ue.event.eid}}">{{ue.event.time}}&nbsp;&nbsp;&nbsp;{{ue.event.desc}}</option>
+                            {% empty %}
+                            <option>暂无体检事件</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-btn">
+                            <button id="remove2" class="btn btn-default" type="button"><i class="glyphicon glyphicon-remove"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div style="float: right; margin-right: 15px;"><button id="event-choose" class="btn btn-success" type="button">确认选择</button></div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12" style="padding: 5px;">
+    <div class="panel panel-default">
+        {% if not compare %}
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                结果详情
+            </h3>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>项目名称</th>
+                    <th>所属类别</th>
+                    <th>结果</th>
+                    <th>单位</th>
+                    <th>参考值</th>
+                </tr>
+            </thread>
+
+            <tbody>
+                {% for rec in rec_set %}
+                <tr>
+                    <th>{{rec.item}}</th>
+                    <td>{{rec.item.itype}}</td>
+                    <td>
+                        {{rec.rec}}
+                        {% if rec.sign == 0 %}
+                        <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-down"></i></span>
+                        {% elif rec.sign == 2 %}
+                        <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-up"></i></span>
+                        {% endif %}
+                    </td>
+                    <td>{{rec.item.unit}}</td>
+                    {% if rec.item.cate == 0 %}
+                    <td>{{rec.item.low_lmt|cut:'None'}}~{{obj.high_lmt|cut:'None'}}</td>
+                    {% else %}
+                    <td>{{rec.item.ref}}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="padding: 10px;">
+            <table class="table table-bordered">
+                <tr>
+                    <th style="width: 80px;">主检医师</th><td>{{ue.staff}}</td>
+                    <th style="width: 80px;">联系方式</th><td>{{ue.staff.phone}}</td>
+                </tr>
+                <tr>
+                    <th>异常结果处置及建议</th><td colspan="3">{{ue.review}}</td>
+                </tr>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                结果比较
+            </h3>
+        </div>
+
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>项目名称</th>
+                    <th>所属类别</th>
+                    <th>第一次结果</th>
+                    <th>第二次结果</th>
+                    <th>单位</th>
+                    <th>参考值</th>
+                </tr>
+            </thread>
+
+            <tbody>
+                {% for rec in rec_set %}
+                <tr>
+                    <th>{{rec.item}}</th>
+                    <td>{{rec.item.itype}}</td>
+                    <td>
+                        {{rec.rec}}
+                        {% if rec.sign == 0 %}
+                        <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-down"></i></span>
+                        {% elif rec.sign == 2 %}
+                        <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-up"></i></span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% with rec_set2|key:rec.item_id as rec2 %}
+                            {{rec2.0}}
+                            {% if rec2.1 == 0 %}
+                            <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-down"></i></span>
+                            {% elif rec2.1 == 2 %}
+                            <span style="color: brown;"> <i class="glyphicon glyphicon-arrow-up"></i></span>
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>{{rec.item.unit}}</td>
+                    {% if rec.item.cate == 0 %}
+                    <td>{{rec.item.low_lmt|cut:'None'}}~{{obj.high_lmt|cut:'None'}}</td>
+                    {% else %}
+                    <td>{{rec.item.ref}}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    let EID;
+    let EID2;
+    let uid;
+
+    $(function () {
+        EID = $('#event').attr('eid');
+        EID2 = $('#event2').attr('eid');
+        uid = $('#user').attr('uid');
+        bindSelectEvent();
+        bindBtnRemoveEvent();
+    })
+
+
+    function bindSelectEvent() {
+        $('#event-choose').click(function () {
+            EID = $('#event').find('option:selected').attr('eid');
+            EID2 = $('#event2').find('option:selected').attr('eid');
+            if (EID && EID2){
+                window.location.replace(location.pathname + '?uid=' + uid +'&eid=' + EID + '&eid2=' + EID2);
+            }else if (EID){
+                window.location.replace(location.pathname + '?uid=' + uid +'&eid=' + EID);
+            }
+        })
+    }    
+    
+
+    function bindBtnRemoveEvent(){
+        $('#remove').click(function(){
+            if (EID){
+                window.location.replace(location.pathname + '?uid=' + uid);
+            }
+        })
+        $('#remove2').click(function(){
+            if (EID && EID2){
+                window.location.replace(location.pathname + '?uid=' + uid +'&eid=' + EID);
+            }
+        })
+    }
+</script>
+{% endblock %}

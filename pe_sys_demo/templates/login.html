@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理系统-登录界面</title>
+    <link rel="stylesheet" href="{% static 'plugins\bootstrap\css\bootstrap.css' %}" />
+    <style>
+        html,
+        body {
+            background-color: #f0fdff;
+        }
+
+        .login-panel {
+            width: 500px;
+            height: 100%;
+            background-color: #fdffff;
+
+            border: 1px solid #d2d2d2;
+            border-radius: 5px;
+            box-shadow: 10px 10px 10px #aaaaaa;
+
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+
+            padding: 25px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .err-msg {
+            color: red;
+            width: 100%;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-panel">
+        <h2>登录体检管理系统</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>账号</label>
+                {{form.idnum}}
+                <span class="err-msg">{{form.idnum.errors.0}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>密码</label>
+                {{form.pwd}}
+                <span class="err-msg">{{form.pwd.errors.0}}</span>
+            </div>
+
+            <div class="form-group">
+                <label>账户类型</label>
+                <div class="radios">
+                    <label for="id_atype_1">
+                        <input id="id_atype_1" name="atype" type="radio" value="1" required checked> 体检用户
+                    </label>
+                    <label for="id_atype_2">
+                        <input id="id_atype_2" name="atype" type="radio" value="2" required> 医务人员
+                    </label>
+                    <label for="id_atype_0">
+                        <input id="id_atype_0" name="atype" type="radio" value="0" required> 管理员
+                    </label>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary btn-block">登 录</button>
+
+        </form>
+    </div>
+
+
+
+
+
+    <script src="{% static 'js\jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'plugins\bootstrap\js\bootstrap.js' %}"></script>
+</body>

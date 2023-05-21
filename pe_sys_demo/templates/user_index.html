@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<title>体检用户{{user.name}}的主页</title>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="glyphicon glyphicon-user"></i>
+            账户与个人信息
+            <span><a class="btn btn-default btn-sm" href="edit/">修改</a></span>
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% include 'sub\personal_info_table.html' with atype=1 %}
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-envelope"></i>
+            体检通知
+            <span class="badge">{{upcoming_ue_set.count}}</span>
+        </h3>
+    </div>
+    {% if upcoming_ue_set %}
+    <table class="table table-bordered" style="table-layout: fixed;">
+        <thread>
+            <tr>
+                <th style="width: 300px;">体检时间</th>
+                <th class="wrap">体检描述</th>
+                <th>状态</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for ue in upcoming_ue_set %}
+            <tr class="warning">
+                <th>{{ue.event.time}}</th>
+                <td class="wrap" title="{{ue.event.desc}}">{{ue.event.desc}}</td>
+                <td>
+                    <span style="color: rgb(249, 95, 95);">{{ue.event.time | timeuntil}}后开始</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert" style="height: 50px; text-align: center;" role="alert">暂无通知</div>
+    {% endif %}
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-ok-sign"></i>
+            已完成的体检
+            <span><a type="button" class="btn btn-default btn-sm" href="events/">查看全部</a></span>
+        </h3>
+    </div>
+    {% if past_ue_set %}
+    <table class="table table-bordered table-hover" style="table-layout: fixed;">
+        <thread>
+            <tr>
+                <th style="width: 300px;">体检时间</th>
+                <th class="wrap">体检描述</th>
+                <th>详情</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for ue in past_ue_set %}
+            <tr>
+                <th>{{ue.event.time}}</th>
+                <td class="wrap" title="{{ue.event.desc}}">{{ue.event.desc}}</td>
+                <td>
+                    <a type="button" class="btn btn-primary btn-xs" href="/rec/?uid={{user.account_id}}&eid={{ue.event_id}}">查看报告</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert" style="height: 50px; text-align: center;" role="alert">暂无项目</div>
+    {% endif %}
+</div>
+
+{% endblock %}

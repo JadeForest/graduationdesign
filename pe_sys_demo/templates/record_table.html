@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% load dicttags %}
+
+{% block content %}
+<title>体检结果总表</title>
+<style>
+    th {
+        min-width: 60px;
+    }
+</style>
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    <a class="btn btn-default" href="../arr/">返回</a>
+</div>
+
+<!-- form -->
+<div class="panel panel-default" style="width: 100%; height: 100%;">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th"></i>
+            结果总表
+        </h3>
+        <div id="eventInfo" eid="{{event.eid}}">
+            时间：{{ event.time }}&nbsp;&nbsp;
+            描述：{{ event.desc }}
+        </div>
+    </div>
+
+    <div style="width:100%; height: 100%; overflow:scroll;">
+    <table class="table table-bordered table-hover">
+        <thread>
+            <tr>
+                <th>体检人员</th>
+                {% for item in items %}
+                <th     
+                {% if item.cate == 0 %}
+                title="{{item.low_lmt|cut:'None'}}~{{item.high_lmt|cut:'None'}}&nbsp;&nbsp;{{item.unit}}"
+                {% else %}
+                title="{{item.ref}}"
+                {% endif %}
+                >
+                    {{item}}<br>
+
+                </th>
+                {% endfor %}
+            </tr>
+
+        </thread>
+        <tbody>
+            {% for ue in page.object_list %}
+            <tr>
+                <th title="{{ue.user.account.idnum}}">{{ue.user}}</th>
+                {% for ele in ue.record_set|myfilter:items %}
+                <td>
+                    {{ele}}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    
+    <!-- 分页 -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <span style="margin-right: 5px;">共{{totalnum}}条</span>
+        {{ page.render }}
+    </div>
+</div>
+
+
+{% endblock %}

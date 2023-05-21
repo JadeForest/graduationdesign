@@ -1,0 +1,176 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<title>体检时间安排管理</title>
+<link rel="stylesheet" href="{% static 'plugins\bootstrap-datetimepicker\css\bootstrap-datetimepicker.min.css' %}">
+
+<div style="margin-bottom: 10px;" >
+    <a type="button" id="btnAdd" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新建项目</a>
+
+    {% include 'sub\search.html' %}
+</div>
+
+
+<!-- 对话框 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="infoModalLabel">title</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="formAdd">
+                    <div class="clearfix">
+                        {% for field in form %}
+
+                        <div class="form-group">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            <span class="error-msg" id="{{field.name}}_err" style="color:red">{{field.errors.0}}</span>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" id="btnSave" class="btn btn-primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除对话框 -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+            <h4>确定要删除该项吗？</h4>
+            <p style="margin: 11px 0px">所有关联数据将会一并删除。</p>
+            <p style="text-align: right;">
+                <button id="btn-del-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- 锁定对话框 -->
+<div class="modal fade" id="lockModal" tabindex="-1" role="dialog" aria-labelledby="lockModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-warning alert-dismissible fade in" role="alert">
+            <h4>确定要锁定并存档该项吗？</h4>
+            <p style="margin: 11px 0px">锁定后将不能编辑项目信息与人员安排情况。</p>
+            <p style="text-align: right;">
+                <button id="btn-lock-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- 清除对话框 -->
+<div class="modal fade" id="arcModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-warning alert-dismissible fade in" role="alert">
+            <h4>确定要结束体检并存档该项吗？</h4>
+            <p style="margin: 11px 0px">在体检结束后将清除未参检人员信息，并无法再进行结果录入。</p>
+            <p style="text-align: right;">
+                <button id="btn-arc-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<!-- 表格 -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th-list"></i>
+            体检时间安排列表
+        </h3>
+    </div>
+ 
+    {% if page.object_list.exists %}
+    <table class="table table-bordered table-hover" style="table-layout: fixed;">
+        <thread>
+            <tr>
+                <th>ID</th>
+                <th style="width: 200px;">时间</th>
+                <th class="wrap">备注</th>
+                <th>人数</th>
+                <th style="width: 90px;">状态</th>
+                <th style="width: 300px;">操作</th>
+
+            </tr>
+        </thread>
+        <tbody>
+            {% for obj in page.object_list %}
+            <tr eid={{obj.eid}} {% if obj.status == 0 %} class="warning" {% endif %}>
+                <th>{{obj.eid}}</th>
+                <td>{{obj.time}}</td>
+                <td class="wrap" title="{{obj.desc}}">{{obj.desc}}</td>
+                <td>{{obj.userevent_set.count}}</td>
+                {% if obj.status == 0 %}
+                <td style="color:darkblue">可编辑</td>
+                {% elif obj.status == 1 %}
+                <td>已锁定</td>
+                {% else %}
+                <td style="color:brown">已存档</td>
+                {% endif %}
+                <td>
+                    {% if obj.status == 0 %}
+                    <a href="{{obj.eid}}/arr/" class="btn btn-primary btn-sm">安排人员</a>
+                    <button eid={{obj.eid}} class="btn btn-warning btn-sm btn-lock">确认安排</button>
+                    <button eid={{obj.eid}} class="btn btn-info btn-sm btn-edit"><i class="glyphicon glyphicon-pencil"></i></button>
+                    {% elif obj.status == 1 %}
+                    <a href="{{obj.eid}}/arr/?status=0" class="btn btn-primary btn-sm">结果录入</a>
+                    <button eid={{obj.eid}} class="btn btn-warning btn-sm btn-archive">存档</button>
+                    {% else %}
+                    <a href="{{obj.eid}}/arr/" class="btn btn-primary btn-sm">详情</a>
+                    {% endif %}
+                    <button eid={{obj.eid}} class="btn btn-danger btn-sm btn-del"><i class="glyphicon glyphicon-trash"></i></button>
+                    
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 分页 -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <span style="margin-right: 5px;">共{{totalnum}}条</span>
+        {{ page.render }}
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无体检事件</div>
+    
+    {% endif %}
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+
+<script src="{% static 'plugins\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'plugins\bootstrap-datetimepicker\locales\bootstrap-datetimepicker.zh-CN.js' %}"></script>
+
+<script src="{% static 'js\event_list.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+
+{% block content %}
+{% if request.path == '/user/list/' %}
+<title>体检用户管理</title>
+{% else %}
+<title>体检结果-按用户查询</title>
+{% endif %}
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    {% if request.path == '/user/list/' %}
+    <a type="button" id="btnAdd" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> 新建用户</a>
+    <a class="btn btn-success" href="users_upload/"><i class="glyphicon glyphicon-open"></i> 批量录入用户</a>
+    {% endif %}
+
+    {% include 'sub\search.html' %}
+</div>
+
+{% if request.path == '/user/list/' %}
+<!-- 对话框 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="infoModalLabel">title</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="formAdd">
+                    <div class="clearfix">
+                        {% for field in a_form %}
+                        <div class="form-group col-lg-6">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            <span class="error-msg" id="{{field.name}}_err" style="color:red"></span>                                 
+                        </div>
+                        {% endfor %}
+
+
+                        {% for field in form %}
+                        <div class="form-group col-lg-6">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            <span class="error-msg" id="{{field.name}}_err" style="color:red"></span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" id="btnSave" class="btn btn-primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除对话框 -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+            <h4>确定要删除该用户吗？</h4>
+            <p style="margin: 11px 0px">删除后，所有关联数据将会一并删除。</p>
+            <p style="text-align: right;">
+                <button id="btn-del-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- 提示框 -->
+<div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="label">
+    <div class="modal-dialog" role="document">
+        <div class="alert alert-success alert-dismissible fade in" style="text-align: center;" role="alert">
+            <strong id="reset-res">重置成功</strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- form -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th-list"></i>
+            体检用户列表
+        </h3>
+    </div>
+
+    <span id="res"><span id="res-content">
+        {% if page.object_list.exists %}
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>UID</th>
+                    <th>姓名</th>
+                    <th>身份证号</th>
+                    <th>手机号</th>
+                    <th>科室</th>
+                    <th>性别</th>
+                    <th>婚姻</th>
+                    <th>工作岗位</th>
+                    {% if request.path == '/user/list/' %}<th>密码</th>{% endif %}
+                    <th>操作</th>
+                </tr>
+
+            </thread>
+            <tbody>
+                {% for obj in page.object_list %}
+                <tr uid="{{obj.account_id}}">
+                    <th>{{obj.account_id}}</th>
+                    <td>{{obj.name}}</td>
+                    <td>{{obj.account.idnum}}</td>
+                    <td>{{obj.phone}}</td>
+                    <td>{{obj.dep}}</td>
+                    <td>{{obj.get_gender_display}}</td>
+                    <td>{{obj.get_marriage_display}}</td>
+                    <td>{{obj.career}}</td>
+                    {% if request.path == '/user/list/' %}
+                    <td>
+                        <button uid="{{obj.account_id}}" type="button"
+                            class="btn btn-default btn-xs btn-reset">重置密码</button>
+                    </td>
+                    <td>
+                        <button uid="{{obj.account_id}}" type="button" class="btn btn-info btn-xs btn-edit">编辑</button>
+                        <button uid="{{obj.account_id}}" type="button" class="btn btn-danger btn-xs btn-del">删除</button>
+                    </td>
+                    {% else %}
+                    <td>
+                        <a type="button" class="btn btn-primary btn-xs" href="/rec/?uid={{obj.account_id}}">查询</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <span style="margin-right: 5px;">共{{totalnum}}条</span>
+            {{ page.render }}
+        </div>
+        
+
+        {% else %}
+        <div id="res-content" class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无项目
+        </div>
+
+        {% endif %}
+    </span></span>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js\user_list.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+{% endblock %}

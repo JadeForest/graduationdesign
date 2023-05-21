@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+{% block content %}
+<title>参检人员安排</title>
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    <a class="btn btn-success" id="sub">确认</a>
+    <a class="btn btn-default" id="exit" href="../">取消</a>
+    <a class="btn btn-default" id="refresh">刷新</a>
+
+    {% include 'sub\search.html' %}
+</div>
+
+<!-- table -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-edit"></i>
+            选择参检人员
+        </h3>
+        <div>
+            时间：{{ event.time }}&nbsp;&nbsp;
+            描述：{{ event.desc }}&nbsp;&nbsp;<br>
+            已选择<span id="totalnum"></span>人<button class="btn btn-warning btn-xs" id="clearAll">全部清除</button>
+        </div>
+    </div>
+    {% if page.object_list %}
+    <table class="table table-bordered table-hover">
+        <thread>
+            <tr>
+                <th style="width: 40px"><button id="selectAll" class="btn btn-default btn-xs">选择全部结果</button></th>
+                <th>姓名</th>
+                <th>身份证号</th>
+                <th>手机号</th>
+                <th>科室</th>
+                <th>性别</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% for obj in page.object_list %}
+            <tr>
+                <th>
+                    {% if obj.account_id in exist_set %}
+                    <input type="checkbox" class="check" id="{{obj.account_id}}" checked />
+                    {% else %}
+                    <input type="checkbox" class="check" id="{{obj.account_id}}" />
+                    {% endif %}
+                </th>
+                <th>{{obj.name}}</th>
+                <td>{{obj.account.idnum}}</td>
+                <td>{{obj.phone}}</td>
+                <td>{{obj.dep}}</td>
+                <td>{{obj.get_gender_display}}</td>
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 分页 -->
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <span style="margin-right: 5px;">共{{totalnum}}条</span>
+        {{ page.render }}
+    </div>
+    {% else %}
+    <div id="res-content" class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无项目
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js\arr_choose.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<title>用户{{request.session.info.user_name}}的体检记录</title>
+<link rel="stylesheet" href="{% static 'plugins\bootstrap-datetimepicker\css\bootstrap-datetimepicker.min.css' %}">
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    <span><a type="button" class="btn btn-default" href="../">返回</a></span>
+
+    {% include 'sub\search.html' %}
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-ok-sign"></i>
+            已完成的体检
+        </h3>
+    </div>
+    {% if page.object_list.exists %}
+    <table class="table table-bordered table-hover" style="table-layout: fixed;">
+        <thread>
+            <tr>
+                <th style="width: 300px;">体检时间</th>
+                <th class="wrap">体检描述</th>
+                <th>总检医师</th>
+                <th>详情</th>
+            </tr>
+
+        </thread>
+        <tbody>
+            {% for ue in page.object_list %}
+            <tr>
+                <th>{{ue.event.time}}</th>
+                <td class="wrap" title="{{ue.event.desc}}">{{ue.event.desc}}</td>
+                <td>{{ue.staff}}</td>
+                <td>
+                    <a type="button" class="btn btn-primary btn-xs" href="/rec/?uid={{request.session.info.uid}}&eid={{ue.event_id}}">查看报告</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <span style="margin-right: 5px;">共{{totalnum}}条</span>
+        {{ page.render }}
+    </div>
+    {% else %}
+    <div class="alert" style="height: 50px; text-align: center;" role="alert">暂无项目</div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'plugins\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'plugins\bootstrap-datetimepicker\locales\bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+{% endblock %}

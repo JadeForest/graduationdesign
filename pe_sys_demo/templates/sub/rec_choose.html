@@ -1,0 +1,79 @@
+{% load usertags %}
+
+<div class="col-lg-6" style="padding: 5px;">
+    <div class="panel panel-default" style="height: 226.8px;">
+        <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> 体检信息</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label>体检时间</label>
+                {% if events %}
+                <div class="input-group">
+                <select id="etime" class="form-control" isSelect="true">
+                    {% for e in events %}
+                    <option eid="{{e.eid}}">{{e.time}}&nbsp;&nbsp;&nbsp;{{e.desc}}</option>
+                    {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                    <button id="event-choose" class="btn btn-success" type="button">确认</button>
+                </span>
+                </div>
+                {% else %}
+                <div id="etime" class="form-control">{{event.time}}</div>
+                {% endif %}
+            </div>
+            <table id="event" eid="{{event.eid}}" class="table table-bordered" style="table-layout: fixed;">
+                <tr>
+                    <th style="width: 40px;">详情</th><td class="wrap">{{event.desc}}</td>
+                </tr>
+            </table>
+    
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-6" style="padding: 5px;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><i class="glyphicon glyphicon-user"></i> 个人信息</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label>身份证号</label>
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            选择 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for obj in info_set %}
+                            <li><a uid="{{obj.user.account_id}}" class="sitem"
+                                    value="{{obj.user.account.idnum}}">{{obj.user.account.idnum}}
+                                    （{{obj.user.name}}）</a>
+                            </li>
+                            {% empty %}
+                            <li>请先选择体检时间</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <input type="text" id="idnum" class="form-control" value="{{user.account.idnum}}" />
+    
+                    <span class="input-group-btn">
+                        <button id="user-choose" class="btn btn-success" type="button">确认</button>
+                    </span>
+                </div>
+            </div>
+    
+            <table class="table table-bordered" style="table-layout: fixed;" id="res" name="{{user.account_id}}">
+                <tr>
+                    <th>姓名</th><td>{{user.name}}</td>
+                    <th>性别</th><td>{{user.get_gender_display}}</td>
+                    <th>科室</th><td>{{user.dep}}</td>
+                </tr>
+                <tr>
+                    <th>年龄</th><td>{{user.account.idnum |getage}}</td>
+                    <th>工作岗位</th><td>{{user.career}}</td>
+                    <th>婚姻</th><td>{{user.get_marriage_display}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

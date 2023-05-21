@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<title>用户{{request.session.info.user_name}}-修改密码</title>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-edit"></i>
+            修改密码
+        </h3>
+    </div>
+    <div class="panel-body">
+        <form id="pwdform" method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-horizontal col-lg-12">
+                {% for field in pwd_form %}
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">{{ field.label }}</label>
+                    <div class="col-lg-8">
+                        {{ field }}
+                        <span class="err-msg" style="color:red">{{ field.errors.0 }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="padding-right: 50px;">
+                <div style="float: right;">
+                    <button type="button" class="btn btn-primary btn-submit">提 交</button>
+                    <a class="btn btn-default" href="../">返 回</a>      
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="label">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-success alert-dismissible fade in" style="text-align: center;" role="alert">
+            <strong>密码修改成功!</strong>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(function () {
+        bindBtnSubEvent();
+    })
+
+    function bindBtnSubEvent() {
+        $('.btn-submit').click(function () {
+            $('.err-msg').empty();
+            $.ajax({
+                url: 'submit/',
+                type: 'POST',
+                data: $('#pwdform').serialize(),
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.status) {
+                        $('#infoModal').modal('show');
+                        setTimeout("window.location.href='../'" ,900);
+                    } else {
+                        $.each(res.error, function (name, error_list) {
+                            $("#id_" + name).next().text(error_list[0])
+                        });
+                    }
+                }
+            })
+        })
+    }
+
+</script>
+{% endblock %}

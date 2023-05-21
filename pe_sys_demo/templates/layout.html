@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'plugins\bootstrap\css\bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css\navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css\global.css' %}">
+    <link rel="stylesheet" href="{% static 'css\layout.css' %}">
+</head>
+
+<body>
+
+    <!-- 侧边栏 -->
+    <div class="panel-group" id="panelContainer">
+        <div class="panel panel-default" style="min-height: 80px; margin-bottom: 30px; border-radius: 0px;">
+            <div class="container" style="width: 250px; padding-top: 11px;">
+                <a class="navbar-brand"><span style="font-size: 18px;">职业健康体检管理系统</span></a>
+            </div>
+        </div>
+
+        {% if request.session.atype != 0 %}
+        <div class="panel panel-default">
+            <div id="header0" class="panel-heading" data-parent="#panelContainer">
+                {% if request.session.atype == 1 %}
+                <a href="/user/{{request.session.info.uid}}/">
+                    {% else %}
+                    <a href="/staff/{{request.session.info.uid}}/">
+                        {% endif %}
+                        <i class="glyphicon glyphicon-user"></i>
+                        个人主页
+                    </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="panel panel-default">
+            <div id="header1" class="panel-heading" data-toggle="collapse" data-target="#sub1"
+                data-parent="#panelContainer">
+                <i class="glyphicon glyphicon-list"></i>
+                用户管理
+                <span class="glyphicon glyphicon-triangle-right pull-right"></span>
+            </div>
+            <div id="sub1" class="collapse panel-collapse">
+                <div class="panel-body">
+                    <ul class="nav">
+                        <li>
+                            <a href="/user/list/">体检用户列表</a>
+                        </li>
+                        <li>
+                            <a href="/staff/list/">医务人员列表</a>
+                        </li>
+                        <li>
+                            <a href="/admin/list/">管理员列表</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if request.session.atype != 1 %}
+        <div class="panel panel-default">
+            <div id="header2" class="panel-heading" data-toggle="collapse" data-target="#sub2"
+                data-parent="#panelContainer">
+                <i class="glyphicon glyphicon-tags"></i>
+                项目管理
+                <span class="glyphicon glyphicon-triangle-right pull-right"></span>
+            </div>
+            <div id="sub2" class="collapse panel-collapse">
+                <div class="panel-body">
+                    <ul class="nav">
+                        <li>
+                            <a href="/itype/">类别管理</a>
+                        </li>
+                        <li>
+                            <a href="/diag/">诊断参考值管理</a>
+                        </li>
+                        <li>
+                            <a href="/item/">项目列表</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div id="header3" class="panel-heading" data-parent="#panelContainer"><a href="/event/">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                    安排管理
+                </a></div>
+        </div>
+        {% endif %}
+
+
+        <div class="panel panel-default">
+            <div id="header4" class="panel-heading" data-toggle="collapse" data-target="#sub4"
+                data-parent="#panelContainer">
+                <i class="glyphicon glyphicon-list-alt"></i>
+                体检结果
+                <span class="glyphicon glyphicon-triangle-right pull-right"></span>
+            </div>
+            <div id="sub4" class="collapse panel-collapse">
+                <div class="panel-body">
+                    <ul class="nav">
+                        {% if request.session.atype != 1 %}
+                        <li>
+                            <a href="/rec/input/">结果录入</a>
+                        </li>
+                        <li>
+                            <a href="/rec/review/">结果审核</a>
+                        </li>
+                        <li>
+                            <a href="/event/?status=2">结果查询-按时间</a>
+                        </li>
+                        <li>
+                            <a href="/rec/by_user/">结果查询-按用户</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="/rec/?uid={{request.session.info.uid}}">体检结果查询</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% if request.session.atype != 0 %}
+        <div class="panel panel-default">
+            <div id="header5" class="panel-heading" data-toggle="collapse" data-target="#sub5"
+                data-parent="#panelContainer">
+                <i class="glyphicon glyphicon-cog"></i>
+                账户设置
+                <span class="glyphicon glyphicon-triangle-right pull-right"></span>
+            </div>
+            <div id="sub5" class="collapse panel-collapse">
+                <div class="panel-body">
+                    <ul class="nav">
+                        <li>
+                            {% if request.session.atype == 1 %}
+                            <a href="/user/{{request.session.info.uid}}/edit/">修改个人信息</a>
+                        </li>
+                        <li>
+                            <a href="/user/{{request.session.info.uid}}/pwd/">更改密码</a>
+                        </li>
+                            {% else %}
+                            <a href="/staff/{{request.session.info.uid}}/edit/">修改个人信息</a>
+                        </li>
+                        <li>
+                            <a href="/staff/{{request.session.info.uid}}/pwd/">更改密码</a>
+                        </li>
+                            {% endif %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="main-container">
+        <!-- 导航栏 -->
+        <nav class="navbar navbar-default navbar-inverse" style="height: 60px;">
+            <div class="container-fluid" style="padding-top: 6px;">
+                <div class="navbar-header">
+                    <a class="navbar-brand" id="pageTitle">标题</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">
+                                欢迎您
+                                {% if request.session.atype == 0 %}
+                                管理员 {{request.session.info.idnum}}
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin/">主页</a></li>
+
+                                {% elif request.session.atype == 1 %}
+                                体检用户 {{request.session.info.user_name}}
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/user/{{request.session.info.uid}}/">主页</a></li>
+
+                                {% else %}
+                                医务人员 {{request.session.info.user_name}}
+                                <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/staff/{{request.session.info.uid}}/">主页</a></li>
+                                {% endif %}
+
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/logout/">注销</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主体 -->
+        <div class="container" style="padding-top: 30px;">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+    <script src="{% static 'js\jquery-3.6.4.min.js' %}"></script>
+    <script src="{% static 'plugins\bootstrap\js\bootstrap.min.js' %}"></script>
+    {% block js %} {% endblock %}
+    <script>
+        $(function () {
+            $("#panelContainer .panel-heading").on("click", function (e) {
+                var idLength = e.currentTarget.id.length;
+                var index = e.currentTarget.id.substr(idLength - 1, idLength);
+                $("#sub" + index).on('hidden.bs.collapse', function () {
+                    $(e.currentTarget).find("span").removeClass("glyphicon glyphicon-triangle-bottom");
+                    $(e.currentTarget).find("span").addClass("glyphicon glyphicon-triangle-right");
+                })
+                $("#sub" + index).on('shown.bs.collapse', function () {
+                    $(e.currentTarget).find("span").removeClass("glyphicon glyphicon-triangle-right");
+                    $(e.currentTarget).find("span").addClass("glyphicon glyphicon-triangle-bottom");
+                })
+            })
+
+
+            $('#pageTitle').text($(document).attr('title'));
+        });
+    </script>
+</body>
+
+</html>

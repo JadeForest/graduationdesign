@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+
+{% block content %}
+<title>管理员列表</title>
+
+<!-- btns -->
+<div style="margin-bottom: 10px;" class="clearfix">
+    <input type="button" id="btnAdd" class="btn btn-primary" value="新建管理员账户"/>
+</div>
+
+<!-- 对话框 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="infoModalLabel">title</h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="formAdd">
+                    <div class="clearfix">
+                        {% for field in a_form %}
+                        <div class="form-group col-lg-6">
+                            <label>{{ field.label }}</label>
+                            {{ field }}
+                            <span class="error-msg" id="{{field.name}}_err" style="color:red">{{ field.errors.0 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" id="btnSave" class="btn btn-primary">保 存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除对话框 -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="alert alert-danger alert-dismissible fade in" role="alert">
+            <h4>确定要删除该管理员吗？</h4>
+            <p style="margin: 11px 0px">删除后，所有关联数据将会一并删除。</p>
+            <p style="text-align: right;">
+                <button id="btn-del-conf" type="button" class="btn btn-danger">确 定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- form -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-th-list"></i>
+            管理员账户列表
+        </h3>
+    </div>
+
+    <span id="res"><span id="res-content">
+        {% if page.object_list.exists %}
+        <table class="table table-bordered table-hover">
+            <thread>
+                <tr>
+                    <th>UID</th>
+                    <th>账户名</th>
+                    <th>密码</th>
+                    <th>操作</th>
+                </tr>
+
+            </thread>
+            <tbody>
+                {% for obj in page.object_list %}
+                <tr uid="{{obj.uid}}">
+                    <th>{{obj.uid}}</th>
+                    <td>{{obj.idnum}} {% if request.session.info.uid == obj.uid %}（当前账户）{% endif %}</td>
+                    <td>{{obj.pwd}}</td>
+                    <td>
+                        <button uid="{{obj.uid}}" type="button" class="btn btn-info btn-xs btn-edit">编辑</button>
+                        {% if request.session.info.uid != obj.uid %}
+                        <button uid="{{obj.uid}}" type="button" class="btn btn-danger btn-xs btn-del">删除</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <span style="margin-right: 5px;">共{{totalnum}}条</span>
+            {{ page.render }}
+        </div>
+        
+
+        {% else %}
+        <div id="res-content" class="alert alert-warning" style="height: 50px; text-align: center;" role="alert">暂无项目
+        </div>
+
+        {% endif %}
+    </span></span>
+</div>
+
+
+<!-- 提示框 -->
+<div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="label">
+    <div class="modal-dialog" role="document">
+        <div class="alert alert-success alert-dismissible fade in" style="text-align: center;" role="alert">
+            <strong id="reset-res">...</strong>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js\admin_list.js' %}"></script>
+<script src="{% static 'js\search.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block content %}
+<title>体检结果审查</title>
+<style>
+    .panel-default{
+        margin-bottom: 7px;
+    }
+</style>
+
+{% include 'sub\rec_choose.html' %}
+
+<div class="col-lg-12" style="padding: 5px;z-index: 999;">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            结果详情
+        </h3>
+    </div>
+    {% if user %}
+    <table class="table table-bordered table-hover">
+        <thread>
+            <tr>
+                <th>项目名称</th>
+                <th>所属类别</th>
+                <th>结果</th>
+                <th>单位</th>
+                <th>参考值</th>
+            </tr>
+
+        </thread>
+        <tbody>
+            {% for rec in rec_set %}
+            <tr>
+                <th>{{rec.item}}</th>
+                <td>{{rec.item.itype}}</td>
+                <td>
+                    {{rec.rec}}
+                    {% if rec.sign == 0 %}
+                    <span> <i class="glyphicon glyphicon-arrow-down"></i></span>
+                    {% elif rec.sign == 2 %}
+                    <span> <i class="glyphicon glyphicon-arrow-up"></i></span>
+                    {% endif %}
+                </td>
+                <td>{{rec.item.unit}}</td>
+                {% if rec.item.cate == 0 %}
+                <td>{{rec.item.low_lmt|cut:'None'}}~{{rec.item.high_lmt|cut:'None'}}</td>
+                {% else %}
+                <td>{{rec.item.ref}}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_complete == 0 %}
+    <form id="review-content" style="padding: 20px;" novalidate>
+        <div style="margin-bottom: 10px;">
+            <label>异常结果处置</label>
+            <textarea class="form-control" name="review" rows="3" placeholder="输入..."></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnSub" style="width: 100px">确认审核</button>
+    </form>
+    {% else %}
+    <div class="alert alert-success" style="height: 50px; text-align: center;" role="alert">已审核该用户
+    </div>
+    {% endif %}
+    {% else %}
+    <div style="padding: 6px;">选择用户以录入</div>
+    {% endif %}
+</div>
+</div>
+
+<!-- 提示框 -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="label">
+    <div class="modal-dialog" role="document">
+        <div class="alert alert-success alert-dismissible fade in" style="text-align: center;" role="alert">
+            <strong>已确认审核！</strong>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block js %}
+<script src="{% static 'js\rec_review.js' %}"></script>
+{% endblock %}

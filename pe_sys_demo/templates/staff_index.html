@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<title>医务人员用户{{user.name}}的主页</title>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="glyphicon glyphicon-user"></i>
+            账户与个人信息
+            <span><a class="btn btn-default btn-sm" href="edit/">修改</a></span>
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% include 'sub\personal_info_table.html' with atype=2 %}
+    </div>
+</div>
+
+
+{% endblock %}

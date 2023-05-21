@@ -1,0 +1,25 @@
+<div class="col-lg-6" style="padding: 5px;">
+    <div class="panel panel-default" style="height: auto;">
+        <div class="panel-heading"><i class="glyphicon glyphicon-user"></i> 用户信息</div>
+        <div class="panel-body">
+            <table class="table table-bordered" id="user" uid="{{user.account_id}}">
+                <tbody>
+                    <tr>
+                        <th>姓名</th><td>{{user.name}}</td>
+                        <th>身份证号</th><td colspan="3">{{user.account.idnum}}</td>
+                    </tr>
+                    <tr>
+                        <th>科室</th><td>{{user.dep}}</td>
+                        <th>性别</th><td>{{user.get_gender_display}}</td>
+                        <th>婚姻</th><td>{{user.get_marriage_display}}</td>
+                    </tr>
+                    <tr>
+                        <th>工作岗位</th><td colspan="2">{{user.career}}</td>
+                        <th>有害因素</th><td colspan="2">{{user.factor}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

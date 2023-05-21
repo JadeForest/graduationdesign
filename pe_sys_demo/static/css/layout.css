@@ -1,0 +1,76 @@
+#panelContainer a,
+#panelContainer a:hover,
+#panelContainer a:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.panel-group {
+    background-color: #B3E5FC;
+    width: 250px;
+    height: 100%;
+    overflow-y: auto;
+    padding: 0 0;
+    position: fixed;
+}
+
+.main-container {
+    padding: 0%;
+    margin-left: 250px;
+}
+
+.panel-group .panel {
+    background-color: #0288D1;
+    border: none;
+}
+
+#panelContainer .panel-heading {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+#panelContainer .panel-default {
+    margin-bottom: 10px;
+}
+
+#panelContainer .panel-default>.panel-heading {
+    border: none;
+    color: #ffffff;
+    background-color: #03A9F4;
+}
+
+.panel-default>.panel-heading>span {
+    font-size: 11px;
+}
+
+#panelContainer .panel-default>.panel-heading:active,
+#panelContainer .panel-default>.panel-heading:hover {
+    background-color: #00BCD4;
+}
+
+#panelContainer .panel-default>.panel-heading>a:hover {
+    text-decoration: none;
+    background-color: #00BCD4;
+}
+
+.panel-group .panel-heading+.panel-collapse>.panel-body {
+    border: none;
+}
+
+.panel-body {
+    padding: 6px;
+}
+
+#panelContainer .nav>li {
+    padding: 1px 0px 0px 0px;
+}
+
+#panelContainer .nav>li>a {
+    text-decoration: none;
+    padding: 10px 10px 10px 35px;
+}
+
+#panelContainer .nav>li>a:hover,
+#panelContainer .nav>li>a:focus {
+    background-color: #00BCD4;
+}
